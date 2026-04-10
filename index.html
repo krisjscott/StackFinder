@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StackFinder — Tech Stack Recommender for Indian Startups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo">Stack<span class="logo-accent">Finder</span></span>
+      <span class="logo-tag">for Indian Startups</span>
+    </div>
+    <div class="topbar-right">
+      <button id="themeToggle" class="pill">🌙</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="hero-eyebrow">Built for Indian founders</p>
+    <h1 class="hero-title">Find your tech stack.<br/>"Skip the guesswork."</h1>
+    <p class="hero-sub">Tell us about your startup and get a recommended stack with real INR costs, India-specific integrations, and honest red flags.</p>
+  </section>
+
+ 
+  <main class="main-layout">
+    <aside class="input-panel" id="inputPanel">
+
+      <!--startup option will be out of 4-->
+      <div class="input-section">
+        <label class="input-label">Startup stage</label>
+        <div class="pill-group" id="stageGroup">
+          <button class="pill" data-group="stage" data-value="idea">Idea</button>
+          <button class="pill" data-group="stage" data-value="mvp">MVP</button>
+          <button class="pill" data-group="stage" data-value="traction">Early traction</button>
+          <button class="pill" data-group="stage" data-value="growth">Growth</button>
+        </div>
+      </div>
+
+      <!--team size option will be out of 4-->
+      <div class="input-section">
+        <label class="input-label">Team size</label>
+        <div class="pill-group" id="teamGroup">
+          <button class="pill" data-group="team" data-value="solo">Solo</button>
+          <button class="pill" data-group="team" data-value="small">2-5</button>
+          <button class="pill" data-group="team" data-value="mid">6-15</button>
+          <button class="pill" data-group="team" data-value="large">15+</button>
+        </div>
+      </div>
+
+      <!--budget monthly option will be out of 4-->
+      <div class="input-section">
+        <label class="input-label">Monthly budget</label>
+        <div class="pill-group" id="budgetGroup">
+          <button class="pill" data-group="budget" data-value="micro">&lt;₹50K</button>
+          <button class="pill" data-group="budget" data-value="low">₹50K-2L</button>
+          <button class="pill" data-group="budget" data-value="mid">₹2L-10L</button>
+          <button class="pill" data-group="budget" data-value="high">₹10L+</button>
+        </div>
+      </div>
+
+      <!--sector option will be out of 6-->
+      <div class="input-section">
+        <label class="input-label">Sector</label>
+        <div class="pill-group" id="sectorGroup">
+          <button class="pill" data-group="sector" data-value="fintech">Fintech</button>
+          <button class="pill" data-group="sector" data-value="healthtech">Healthtech</button>
+          <button class="pill" data-group="sector" data-value="edtech">EdTech</button>
+          <button class="pill" data-group="sector" data-value="d2c">D2C / E-comm</button>
+          <button class="pill" data-group="sector" data-value="saas">SaaS B2B</button>
+          <button class="pill" data-group="sector" data-value="agritech">Agritech</button>
+        </div>
+      </div>
+
+      <button class="cta-btn" id="generateBtn" disabled>
+        <span class="cta-text">Generate stack</span>
+        <span class="cta-arrow">→</span>
+      </button>
+
+      <p class="input-hint" id="inputHint">Select all 4 options above</p>
+
+    </aside>
+
+    
+    <section class="output-panel" id="outputPanel">
+
+    
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">⬡</div>
+        <p class="empty-title">Your stack will appear here</p>
+        <p class="empty-sub">Fill in your startup details on the left to get a personalised recommendation with real INR pricing.</p>
+      </div>
+
+      <!-- Results -->
+      <div class="result-wrapper" id="resultWrapper" style="display:none;">
+
+        <div class="result-header">
+          <div class="result-header-left">
+            <h2 class="result-title" id="resultTitle">Recommended stack</h2>
+            <p class="result-subtitle" id="resultSubtitle"></p>
+          </div>
+          <div class="result-badges" id="resultBadges"></div>
+        </div>
+
+        <div class="stack-grid" id="stackGrid"></div>
+        <div class="india-box" id="indiaBox"></div>
+        <div class="redflag-box" id="redflagBox"></div>
+        <div class="source-row" id="sourceRow"></div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Research sourced from StackShare, LinkedIn job postings, and direct developer conversations · Built for TIESVERSE Foundation Internship Phase 2 · April 2026</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
