@@ -7,45 +7,38 @@ const selected = {
 
 const toggleBtn = document.getElementById("themeToggle");
 
-toggleBtn.addEventListener("click", () => {
-  const currentTheme = document.body.getAttribute("data-theme");
+if (toggleBtn) {
+  const savedTheme = localStorage.getItem("theme");
 
-  if (currentTheme === "dark") {
-    document.body.removeAttribute("data-theme");
-    toggleBtn.textContent = "🌙";
-  } else {
+  if (savedTheme === "dark") {
     document.body.setAttribute("data-theme", "dark");
     toggleBtn.textContent = "☀️";
+  } else {
+    toggleBtn.textContent = "🌙";
   }
-});
 
-if (localStorage.getItem("theme") === "dark") {
-  document.body.setAttribute("data-theme", "dark");
-  toggleBtn.textContent = "☀️";
+  toggleBtn.addEventListener("click", () => {
+    const isDark = document.body.getAttribute("data-theme") === "dark";
+
+    if (isDark) {
+      document.body.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+      toggleBtn.textContent = "🌙";
+    } else {
+      document.body.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+      toggleBtn.textContent = "☀️";
+    }
+  });
 }
-
-toggleBtn.addEventListener("click", () => {
-  const isDark = document.body.getAttribute("data-theme") === "dark";
-
-  if (isDark) {
-    document.body.removeAttribute("data-theme");
-    localStorage.setItem("theme", "light");
-    toggleBtn.textContent = "🌙";
-  } else {
-    document.body.setAttribute("data-theme", "dark");
-    localStorage.setItem("theme", "dark");
-    toggleBtn.textContent = "☀️";
-  }
-});
-
 const STACKS = {
 
   fintech_idea: {
     label: 'Fintech · Idea Stage',
     sector: 'Fintech',
     frontend:  { name: 'React',           cost: 'Free',                    contra: false },
-    backend:   { name: 'Supabase Functions', cost: 'Free tier',            contra: false },
-    database:  { name: 'Supabase PostgreSQL', cost: 'Free → ₹420/mo Pro', contra: true,
+    backend:   { name: 'Supabase Functions / Firebase', cost: 'Free tier',            contra: false },
+    database:  { name: 'Supabase PostgreSQL / FireStore', cost: 'Free → ₹420/mo Pro', contra: true,
                  reason: 'PostgreSQL over MongoDB — RBI audit trails require ACID compliance. NoSQL is a trap for fintech.' },
     auth:      { name: 'Supabase Auth',   cost: 'Free up to 50K MAU',      contra: false },
     payments:  { name: 'Razorpay',        cost: '2% per txn · no setup',   contra: false },
@@ -261,37 +254,54 @@ const STACKS = {
   }
 };
 
-/* ============================================================
-   LOOKUP TABLE
-   Maps sector + stage → STACKS key
-   Falls back to closest match if exact combo not found
-   ============================================================ */
-function getStackKey(sector, stage) {
-  const exact = `${sector}_${stage}`;
-  if (STACKS[exact]) return exact;
+function getStackKey({ sector, stage, budget }) {
 
-  // Fallback mappings
-  const fallbacks = {
-    fintech_traction: 'fintech_mvp',
-    fintech_growth:   'fintech_mvp',
-    healthtech_idea:  'healthtech_mvp',
-    healthtech_traction: 'healthtech_mvp',
-    edtech_growth:    'edtech_traction',
-    d2c_idea:         'd2c_mvp',
-    d2c_traction:     'd2c_mvp',
-    saas_idea:        'saas_mvp',
-    saas_traction:    'saas_mvp',
-    agritech_mvp:     'agritech_idea',
-    agritech_traction:'agritech_idea',
-    agritech_growth:  'agritech_idea'
-  };
+  if (stage === "growth" && budget === "micro") {
+    stage = "mvp"; // downgrade
+  }
 
-  return fallbacks[exact] || 'fintech_mvp';
+  if (budget === "micro") {
+    if (sector === "edtech") return "edtech_idea";
+    if (sector === "fintech") return "fintech_idea";
+    if (sector === "agritech") return "agritech_idea";
+    if (sector === "healthtech") return "healthtech_idea";
+
+    return "edtech_idea";
 }
 
-/* ============================================================
-   PILL SELECTION LOGIC
-   ============================================================ */
+  if (budget === "low") {
+    if (sector === "healthtech") {
+      if (stage === "growth") return "healthtech_growth";
+      return "healthtech_mvp";
+    }
+    if (sector === "fintech") return "fintech_mvp";
+    if (sector === "edtech") return stage === "idea" ? "edtech_idea" : "edtech_traction";
+    if (sector === "saas") return "saas_mvp";
+
+    return "saas_mvp";
+  }
+
+  if (budget === "mid") {
+    if (sector === "healthtech") return "healthtech_growth";
+    if (sector === "d2c") return stage === "growth" ? "d2c_growth" : "d2c_mvp";
+    if (sector === "saas") return "saas_growth";
+
+    return "saas_growth";
+  }
+
+  if (budget === "high") {
+    if (sector === "d2c") return "d2c_growth";
+    if (sector === "saas") return "saas_growth";
+    if (sector === "healthtech") return "healthtech_growth";
+
+    return "d2c_growth";
+  }
+
+  const exact = `${sector}_${stage}`;
+  return STACKS[exact] ? exact : "fintech_mvp";
+}
+
+
 function initPills() {
   const pills = document.querySelectorAll('.pill');
 
@@ -336,9 +346,7 @@ function updateCTA() {
   }
 }
 
-/* ============================================================
-   GENERATE BUTTON
-   ============================================================ */
+
 function initGenerate() {
   document.getElementById('generateBtn').addEventListener('click', () => {
     if (!selected.stage || !selected.team || !selected.budget || !selected.sector) return;
@@ -346,31 +354,30 @@ function initGenerate() {
   });
 }
 
-/* ============================================================
-   RENDER RESULT
-   ============================================================ */
 function renderResult() {
-  const key   = getStackKey(selected.sector, selected.stage);
+  const key = getStackKey(selected);
   const stack = STACKS[key];
 
-  if (!stack) return;
+  if (!stack) {
+    console.error("No Stack found for:", selected);
+    return;
+  }
 
-  // Hide empty state, show result
+
   document.getElementById('emptyState').style.display    = 'none';
   const wrapper = document.getElementById('resultWrapper');
   wrapper.style.display = 'flex';
 
-  // Force re-animation
+
   wrapper.style.animation = 'none';
   wrapper.offsetHeight;
   wrapper.style.animation = '';
 
-  // --- HEADER ---
+
   document.getElementById('resultTitle').textContent = 'Recommended stack';
   document.getElementById('resultSubtitle').textContent =
     `${stack.label} · ${selected.team === 'solo' ? 'Solo' : selected.team === 'small' ? '2–5 people' : selected.team === 'mid' ? '6–15 people' : '15+ people'} · ${getBudgetLabel(selected.budget)}`;
 
-  // --- BADGES ---
   const badgeContainer = document.getElementById('resultBadges');
   badgeContainer.innerHTML = '';
   badgeContainer.innerHTML += `<span class="badge badge-sector">${stack.sector}</span>`;
@@ -378,7 +385,7 @@ function renderResult() {
     badgeContainer.innerHTML += `<span class="badge badge-contra">${stack.contraCount} contrarian pick${stack.contraCount > 1 ? 's' : ''}</span>`;
   }
 
-  // --- STACK GRID ---
+
   const grid = document.getElementById('stackGrid');
   grid.innerHTML = '';
 
@@ -408,7 +415,7 @@ function renderResult() {
     grid.appendChild(card);
   });
 
-  // --- INDIA INTEGRATION ---
+
   const indiaBox = document.getElementById('indiaBox');
   indiaBox.innerHTML = `
     <div class="india-icon">${stack.india.icon}</div>
@@ -419,14 +426,14 @@ function renderResult() {
     </div>
   `;
 
-  // --- RED FLAG ---
+
   const redflagBox = document.getElementById('redflagBox');
   redflagBox.innerHTML = `
     <div class="redflag-header">⚠ Red flag for this combination</div>
     <div class="redflag-text">${stack.redflag}</div>
   `;
 
-  // --- SOURCE ---
+ 
   const sourceRow = document.getElementById('sourceRow');
   sourceRow.innerHTML = `
     <div class="source-dot"></div>
@@ -434,15 +441,12 @@ function renderResult() {
     <span class="source-text">${stack.source}</span>
   `;
 
-  // Scroll to output on mobile
+
   if (window.innerWidth <= 900) {
     document.getElementById('outputPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
 function getBudgetLabel(budget) {
   const map = {
     micro: 'Under ₹50K/mo',
@@ -453,9 +457,6 @@ function getBudgetLabel(budget) {
   return map[budget] || budget;
 }
 
-/* ============================================================
-   INIT
-   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   initPills();
   initGenerate();

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Startup Stack Finder - Dev Log</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      padding: 20px;
+      color: #0f172a;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .log-container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .log-entry {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .log-type {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .research { background: #e0f2fe; color: #0369a1; }
+    .bug { background: #fee2e2; color: #991b1b; }
+    .fix { background: #dcfce7; color: #166534; }
+    .decision { background: #fef3c7; color: #92400e; }
+
+    .log-time {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .log-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .log-desc {
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    textarea, select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd5f5;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .form-box {
+      background: white;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Startup Stack Finder – Development Log</h1>
+
+<div class="log-container">
+
+  <!-- INPUT FORM -->
+  <div class="form-box">
+    <h3>Add New Log</h3>
+
+    <select id="type">
+      <option value="research">Research</option>
+      <option value="decision">Decision</option>
+      <option value="bug">Bug</option>
+      <option value="fix">Fix</option>
+    </select>
+
+    <input type="text" id="title" placeholder="Title (e.g. Healthtech stack mismatch)">
+
+    <textarea id="desc" rows="4" placeholder="Describe what happened..."></textarea>
+
+    <button onclick="addLog()">Add Log</button>
+  </div>
+
+  <!-- LOGS -->
+  <div id="logs"></div>
+
+</div>
+
+<script>
+  function addLog() {
+    const type = document.getElementById("type").value;
+    const title = document.getElementById("title").value;
+    const desc = document.getElementById("desc").value;
+
+    if (!title || !desc) return;
+
+    const time = new Date().toLocaleString();
+
+    const log = document.createElement("div");
+    log.className = "log-entry";
+
+    log.innerHTML = `
+      <div class="log-header">
+        <span class="log-type ${type}">${type.toUpperCase()}</span>
+        <span class="log-time">${time}</span>
+      </div>
+      <div class="log-title">${title}</div>
+      <div class="log-desc">${desc}</div>
+    `;
+
+    document.getElementById("logs").prepend(log);
+
+    document.getElementById("title").value = "";
+    document.getElementById("desc").value = "";
+  }
+</script>
+
+</body>
+</html>
