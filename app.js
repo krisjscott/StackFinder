@@ -515,20 +515,17 @@ function resolveKey({ sector, stage, budget }) {
     };
     return highMap[sector] || 'saas_growth';
   }
-
-  /* --- exact match fallback --- */
-  const exact = `${sector}_${stage}`;
-  return STACKS[exact] ? exact : 'saas_mvp';
-
   if (stage === "idea") {
   // always downgrade complexity
     return `${sector}_idea`;
   }
+  /* --- exact match fallback --- */
+  const exact = `${sector}_${stage}`;
+  return STACKS[exact] ? exact : 'saas_mvp';
+
+  
 }
 
-/* ============================================================
-   PILL INTERACTIONS
-   ============================================================ */
 function initPills() {
   const pills = document.querySelectorAll('.pill[data-group]');
 
