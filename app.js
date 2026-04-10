@@ -31,14 +31,18 @@ if (toggleBtn) {
     }
   });
 }
+
+/* ============================================================
+   STACK DATA
+   ============================================================ */
 const STACKS = {
 
   fintech_idea: {
     label: 'Fintech · Idea Stage',
     sector: 'Fintech',
     frontend:  { name: 'React',           cost: 'Free',                    contra: false },
-    backend:   { name: 'Supabase Functions / Firebase', cost: 'Free tier',            contra: false },
-    database:  { name: 'Supabase PostgreSQL / FireStore', cost: 'Free → ₹420/mo Pro', contra: true,
+    backend:   { name: 'Supabase Functions / Firebase', cost: 'Free tier', contra: false },
+    database:  { name: 'Supabase PostgreSQL / Firestore', cost: 'Free → ₹420/mo Pro', contra: true,
                  reason: 'PostgreSQL over MongoDB — RBI audit trails require ACID compliance. NoSQL is a trap for fintech.' },
     auth:      { name: 'Supabase Auth',   cost: 'Free up to 50K MAU',      contra: false },
     payments:  { name: 'Razorpay',        cost: '2% per txn · no setup',   contra: false },
@@ -73,6 +77,44 @@ const STACKS = {
     contraCount: 1
   },
 
+  fintech_growth: {
+    label: 'Fintech · Growth Stage',
+    sector: 'Fintech',
+    frontend:  { name: 'React + TypeScript', cost: 'Free',                 contra: false },
+    backend:   { name: 'Django + microservices (Python)', cost: 'Free',    contra: true,
+                 reason: 'Python backend maintained at growth — RBI regulation and ML-based fraud detection make a Python rewrite prohibitive. Migrate individual services, never the whole stack at once.' },
+    database:  { name: 'PostgreSQL + Redis', cost: 'AWS RDS ~₹2,800/mo + ElastiCache ~₹800/mo', contra: false },
+    auth:      { name: 'Auth0',              cost: 'Free 7,500 MAU → ₹1,800/mo', contra: false },
+    payments:  { name: 'Razorpay Subscriptions + UPI AutoPay', cost: '2% per txn', contra: false },
+    hosting:   { name: 'AWS EC2 + S3',       cost: 'EC2 t3.medium ~₹3,200/mo + S3', contra: false },
+    india: {
+      icon: 'NACH',
+      name: 'NACH Mandate + RBI Sandbox API',
+      desc: 'National Automated Clearing House — for loan EMI and insurance premium auto-debit. Mandatory at scale. RBI Regulatory Sandbox: rbi.org.in/fintech/sandbox. Apply 3–6 months before launch.'
+    },
+    redflag: 'At fintech growth stage, PCI-DSS certification becomes non-negotiable for card payments. This is a 6-month audit process. Begin the compliance checklist before you hit ₹10L+ monthly transactions, not after.',
+    source: 'RBI sandbox: rbi.org.in/fintech · NACH API: npci.org.in/product-overview/nach · AWS pricing: aws.amazon.com/pricing',
+    contraCount: 1
+  },
+
+  healthtech_idea: {
+    label: 'Healthtech · Idea Stage',
+    sector: 'Healthtech',
+    frontend:  { name: 'React',            cost: 'Free',                   contra: false },
+    backend:   { name: 'Firebase (BaaS)',   cost: 'Free Spark plan',        contra: false },
+    database:  { name: 'Firebase Firestore', cost: 'Free 1GB → ₹7/GB beyond', contra: false },
+    auth:      { name: 'Firebase Auth',     cost: 'Free up to 10K MAU',    contra: false },
+    payments:  { name: 'Razorpay',          cost: '2% per txn',            contra: false },
+    hosting:   { name: 'Vercel',            cost: 'Free tier (100GB bandwidth)', contra: false },
+    india: {
+      icon: 'ABHA',
+      name: 'ABDM / ABHA Health ID API (Sandbox)',
+      desc: 'Ayushman Bharat Digital Mission — mandatory for any health record or telemedicine platform. Start with sandbox access now. Official docs: abdm.gov.in/sandbox. Free sandbox access.'
+    },
+    redflag: 'Health data is regulated under India\'s Digital Personal Data Protection Act 2023. You cannot store patient records on free-tier infrastructure. Budget for DPDP-compliant storage from day one — Firebase M0 free tier does not meet DPDP requirements.',
+    source: 'ABDM sandbox: abdm.gov.in · Firebase pricing: firebase.google.com/pricing · DPDP Act 2023: meity.gov.in',
+    contraCount: 0
+  },
 
   healthtech_mvp: {
     label: 'Healthtech · MVP',
@@ -113,7 +155,6 @@ const STACKS = {
     contraCount: 1
   },
 
-
   edtech_idea: {
     label: 'EdTech · Idea Stage',
     sector: 'EdTech',
@@ -134,6 +175,25 @@ const STACKS = {
     contraCount: 1
   },
 
+  edtech_mvp: {
+    label: 'EdTech · MVP',
+    sector: 'EdTech',
+    frontend:  { name: 'React',            cost: 'Free',                   contra: false },
+    backend:   { name: 'Node.js + Express', cost: 'Free',                  contra: false },
+    database:  { name: 'Supabase PostgreSQL', cost: 'Free → ₹420/mo Pro', contra: false },
+    auth:      { name: 'Firebase Auth',     cost: 'Free up to 10K MAU',    contra: false },
+    payments:  { name: 'Razorpay',          cost: '2% per txn',            contra: false },
+    hosting:   { name: 'Render',            cost: 'Free → ₹800/mo Starter', contra: false },
+    india: {
+      icon: 'Digi',
+      name: 'DigiLocker API for Certificate Issuance',
+      desc: 'Issue verifiable course certificates linked to student Digi IDs. Official docs: api.digitallocker.gov.in. Free for government-verified issuers — the credential process takes 4–6 weeks.'
+    },
+    redflag: 'Moving from Firebase to PostgreSQL mid-product is an expensive migration. Plan your data structure before you have 5,000 users — relational schemas do not map cleanly from Firestore document models.',
+    source: 'Sstudize stack confirmed via direct developer conversation, April 2026 · Supabase pricing: supabase.com/pricing',
+    contraCount: 0
+  },
+
   edtech_traction: {
     label: 'EdTech · Early Traction',
     sector: 'EdTech',
@@ -152,6 +212,45 @@ const STACKS = {
     redflag: 'Switching from Firebase to PostgreSQL mid-product is an expensive migration — plan the transition before you have 10,000 users, not after. Data structure decisions made in Firebase Firestore do not map cleanly to relational schemas.',
     source: 'Sstudize stack confirmed via direct developer conversation, April 2026 · LinkedIn job postings confirmed Django requirement · AWS pricing: aws.amazon.com/ec2/pricing',
     contraCount: 1
+  },
+
+  edtech_growth: {
+    label: 'EdTech · Growth Stage',
+    sector: 'EdTech',
+    frontend:  { name: 'Next.js',          cost: 'Free',                   contra: false },
+    backend:   { name: 'Django (Python) + microservices', cost: 'Free',    contra: true,
+                 reason: 'Python at growth stage — ML-based personalization (adaptive quizzes, learning paths) requires scikit-learn and pandas pipelines. Rewriting to Node.js at this stage would be catastrophic.' },
+    database:  { name: 'PostgreSQL + Redis', cost: 'AWS RDS ~₹2,800/mo + ElastiCache ~₹800/mo', contra: false },
+    auth:      { name: 'Auth0',             cost: 'Free 7,500 MAU → ₹1,800/mo', contra: false },
+    payments:  { name: 'Razorpay Subscriptions', cost: '2% per txn',       contra: false },
+    hosting:   { name: 'AWS EC2 + S3',      cost: 'EC2 t3.medium ~₹3,200/mo + S3 ~₹200/mo', contra: false },
+    india: {
+      icon: 'Digi',
+      name: 'DigiLocker + NEP 2020 Digital Credentials',
+      desc: 'National Education Policy 2020 mandates digital credentials for all certified courses. DigiLocker integration is now a competitive necessity for institution partnerships. Docs: api.digitallocker.gov.in.'
+    },
+    redflag: 'Video streaming at scale is a major cost trap. AWS S3 + CloudFront charges ₹7–9 per GB egress in India. At growth stage with 10,000+ concurrent learners, CDN costs can exceed your infra budget. Evaluate BunnyCDN (India PoP) as a 60–70% cheaper alternative.',
+    source: 'Sstudize stack via developer conversation, April 2026 · AWS pricing: aws.amazon.com/cloudfront/pricing · BunnyCDN: bunny.net/pricing',
+    contraCount: 1
+  },
+
+  d2c_idea: {
+    label: 'D2C · Idea Stage',
+    sector: 'D2C / E-comm',
+    frontend:  { name: 'Shopify (hosted)',  cost: 'Basic ₹1,994/mo',       contra: false },
+    backend:   { name: 'Platform-managed (Shopify)', cost: 'Included',      contra: false },
+    database:  { name: 'Platform-managed', cost: 'Included in platform',   contra: false },
+    auth:      { name: 'Platform-managed', cost: 'Included',               contra: false },
+    payments:  { name: 'Razorpay',         cost: '2% per txn · UPI at 0% MDR', contra: false },
+    hosting:   { name: 'Shopify-hosted',   cost: 'Included in plan',        contra: false },
+    india: {
+      icon: 'UPI',
+      name: 'Razorpay UPI + COD Handling',
+      desc: 'COD (Cash on Delivery) is still 40–50% of Indian D2C orders. Razorpay COD Intelligence scores delivery risk per order. Docs: razorpay.com/docs/payments/cod. No extra setup cost.'
+    },
+    redflag: 'Shopify charges 2% transaction fees if you do not use Shopify Payments — which is unavailable in India. You will always pay Razorpay (2%) + Shopify (2%) = 4% per transaction. Budget this into your unit economics from day one.',
+    source: 'Shopify India pricing: shopify.com/in/pricing · Razorpay COD docs: razorpay.com/docs',
+    contraCount: 0
   },
 
   d2c_mvp: {
@@ -193,6 +292,25 @@ const STACKS = {
     contraCount: 1
   },
 
+  saas_idea: {
+    label: 'SaaS B2B · Idea Stage',
+    sector: 'SaaS B2B',
+    frontend:  { name: 'React',            cost: 'Free',                   contra: false },
+    backend:   { name: 'Supabase (BaaS)',   cost: 'Free tier',              contra: false },
+    database:  { name: 'Supabase PostgreSQL', cost: 'Free → ₹420/mo Pro',  contra: false },
+    auth:      { name: 'Supabase Auth',     cost: 'Free up to 50K MAU',    contra: false },
+    payments:  { name: 'Razorpay',          cost: '2% per txn · no setup', contra: false },
+    hosting:   { name: 'Vercel + Supabase', cost: 'Free tier both',         contra: false },
+    india: {
+      icon: 'GST',
+      name: 'GST Verification API (Masters India / Sandbox.io)',
+      desc: 'Mandatory for B2B SaaS invoicing in India — verify client GSTINs before issuing invoices. Pricing: ~₹0.50 per API call. Official API: mastersindia.co/gst-verification-api.'
+    },
+    redflag: 'B2B SaaS at idea stage often skips multi-tenancy design. Retrofitting row-level tenant isolation into a single-schema PostgreSQL database is a 2–3 month project. Design for multiple tenants from your very first migration — even if you have just one customer.',
+    source: 'Supabase pricing: supabase.com/pricing · GST API: mastersindia.co · Vercel pricing: vercel.com/pricing',
+    contraCount: 0
+  },
+
   saas_mvp: {
     label: 'SaaS B2B · MVP',
     sector: 'SaaS B2B',
@@ -213,6 +331,26 @@ const STACKS = {
     contraCount: 1
   },
 
+  saas_traction: {
+    label: 'SaaS B2B · Early Traction',
+    sector: 'SaaS B2B',
+    frontend:  { name: 'React + TypeScript', cost: 'Free',                 contra: false },
+    backend:   { name: 'Django (Python)',    cost: 'Free',                  contra: true,
+                 reason: 'Django maintained at traction — analytics pipeline rewrites at this stage cost 2–3 months. Only add Spring Boot for specific high-throughput services, not as a replacement.' },
+    database:  { name: 'PostgreSQL',         cost: 'AWS RDS ~₹1,400/mo',   contra: false },
+    auth:      { name: 'Auth0',              cost: 'Free 7,500 MAU → ₹1,800/mo', contra: false },
+    payments:  { name: 'Razorpay Subscriptions', cost: '2% per txn',       contra: false },
+    hosting:   { name: 'AWS EC2 t3.small',   cost: '~₹1,700/mo',           contra: false },
+    india: {
+      icon: 'GST',
+      name: 'GST Verification + E-Invoice API',
+      desc: 'From ₹5Cr+ annual turnover, e-invoicing is mandatory under GST rules. Integrate the IRP (Invoice Registration Portal) API early: einvoice1.gst.gov.in. ~₹0.50 per call.'
+    },
+    redflag: 'At traction stage, enterprise clients will ask for SOC 2 Type II or ISO 27001 certification. Starting this compliance process takes 9–12 months. If enterprise is your ICP, begin the audit process now — not when a client demands it.',
+    source: 'Solytics Partners confirmed via careers page · Auth0 pricing: auth0.com/pricing · GST e-invoice: einvoice1.gst.gov.in',
+    contraCount: 1
+  },
+
   saas_growth: {
     label: 'SaaS B2B · Growth',
     sector: 'SaaS B2B',
@@ -226,7 +364,7 @@ const STACKS = {
     india: {
       icon: 'GST',
       name: 'GST API + Aadhaar eKYC for Onboarding',
-      desc: 'At growth stage, automated business verification via GSTIN + Aadhaar eKYC reduces manual onboarding friction. Aadhaar eKYC: uidai.gov.in/ecosystem/authentication-devices-documents. Per-call pricing ~₹2–5.'
+      desc: 'At growth stage, automated business verification via GSTIN + Aadhaar eKYC reduces manual onboarding friction. Aadhaar eKYC: uidai.gov.in/ecosystem. Per-call pricing ~₹2–5.'
     },
     redflag: 'At growth stage SaaS, multi-tenancy architecture is your biggest technical risk. If you did not build row-level security and tenant isolation from day one in PostgreSQL, adding it retroactively is a 2–4 month project. This is non-negotiable before enterprise clients come in.',
     source: 'Solytics Partners stack confirmed via solytics-partners.com/careers · Auth0 pricing: auth0.com/pricing · AWS pricing: aws.amazon.com/pricing',
@@ -251,75 +389,160 @@ const STACKS = {
     redflag: 'Agritech products fail most often not because of technology but because of last-mile distribution and farmer trust. Do not over-engineer the stack at idea stage. Spend 70% of your time in the field, 30% building. The biggest red flag is building a sophisticated platform before talking to 50 farmers.',
     source: 'eNAM API: enam.gov.in · Firebase pricing: firebase.google.com/pricing · PWA for rural India: Google India developer case studies',
     contraCount: 1
+  },
+
+  agritech_mvp: {
+    label: 'Agritech · MVP',
+    sector: 'Agritech',
+    frontend:  { name: 'React (PWA) + Vernacular UI', cost: 'Free',        contra: true,
+                 reason: 'Vernacular-first design at MVP — Agritech retention depends on regional language support (Hindi, Marathi, Telugu). Apps that launched English-only lost 60–70% of rural users in onboarding.' },
+    backend:   { name: 'Node.js + Express', cost: 'Free',                  contra: false },
+    database:  { name: 'MongoDB Atlas',     cost: 'Free M0 → ₹600/mo M2', contra: false },
+    auth:      { name: 'Firebase Auth (Phone OTP)', cost: 'Free',           contra: false },
+    payments:  { name: 'Razorpay UPI',      cost: '0% MDR on UPI',         contra: false },
+    hosting:   { name: 'Render',            cost: 'Free → ₹800/mo',         contra: false },
+    india: {
+      icon: 'eNAM',
+      name: 'eNAM + PM-KISAN API Integration',
+      desc: 'PM-KISAN API gives access to verified farmer beneficiary data — invaluable for credit scoring and subsidy disbursement features. Combined with eNAM for market price data. Both free for registered platforms.'
+    },
+    redflag: 'SMS-based OTP auth fails in low-connectivity zones. Build a fallback TOTP (Time-based OTP) or missed-call verification for farmers in areas with 2G coverage. Skipping this will cause 30–40% drop-off at signup.',
+    source: 'eNAM API: enam.gov.in · PM-KISAN: pmkisan.gov.in · MongoDB Atlas pricing: mongodb.com/pricing',
+    contraCount: 1
+  },
+
+  agritech_growth: {
+    label: 'Agritech · Growth Stage',
+    sector: 'Agritech',
+    frontend:  { name: 'React Native (cross-platform)', cost: 'Free',      contra: false },
+    backend:   { name: 'Django (Python)',   cost: 'Free',                   contra: true,
+                 reason: 'Python at growth — ML crop yield prediction, soil analysis, and weather correlation require pandas and scikit-learn. Agritech at scale without ML is a commodity product. Python is not optional.' },
+    database:  { name: 'PostgreSQL + PostGIS', cost: 'AWS RDS ~₹2,800/mo', contra: false },
+    auth:      { name: 'Firebase Auth',     cost: 'Free 10K MAU',          contra: false },
+    payments:  { name: 'Razorpay UPI + NACH', cost: '0% MDR UPI · NACH for loan EMI', contra: false },
+    hosting:   { name: 'AWS EC2 + S3',      cost: 'EC2 t3.medium ~₹3,200/mo', contra: false },
+    india: {
+      icon: 'AGRI',
+      name: 'AgriStack + Soil Health Card API',
+      desc: 'AgriStack is India\'s federated farmer database — digital land records, crop history, input usage. Soil Health Card API (soilhealth.dac.gov.in) provides farm-level nutrient data. Both are free for verified agritech platforms.'
+    },
+    redflag: 'PostGIS (geospatial PostgreSQL) is powerful but requires specialized database skills. If your team has no GIS experience, raw GPS coordinates in MongoDB may serve you better for 12–18 months. Only adopt PostGIS when you have field-boundary polygon data at scale.',
+    source: 'AgriStack: agristack.gov.in · Soil Health Card: soilhealth.dac.gov.in · PostGIS docs: postgis.net',
+    contraCount: 1
   }
 };
 
-function getStackKey({ sector, stage, budget }) {
+function detectEdgeCases({ stage, team, budget, sector }) {
 
-  if (stage === "growth" && budget === "micro") {
-    stage = "mvp"; // downgrade
+ 
+  if (stage === 'growth' && team === 'solo' && budget === 'micro') {
+    return {
+      type: 'unrealistic',
+      headline: '⚠ This combination is unrealistic',
+      body: 'A solo founder with a sub-₹50K/mo budget cannot operate a growth-stage product. Growth stage typically requires 5–15 engineers and ₹2L–10L/mo infrastructure. Showing you an MVP-stage stack instead — this is the realistic starting point.',
+      downgradedKey: resolveKey({ stage: 'mvp', team, budget: 'micro', sector })
+    };
   }
 
-  if (budget === "micro") {
-    if (sector === "edtech") return "edtech_idea";
-    if (sector === "fintech") return "fintech_idea";
-    if (sector === "agritech") return "agritech_idea";
-    if (sector === "healthtech") return "healthtech_idea";
+  if (stage === 'growth' && budget === 'micro') {
+    return {
+      type: 'mismatch',
+      headline: '⚠ Budget–Stage mismatch detected',
+      body: 'Growth-stage products require meaningful infrastructure spend — typically ₹2L–10L/mo. A sub-₹50K/mo budget at growth stage means you are either pre-revenue or heavily bootstrapped. Showing you an MVP stack — the realistic fit for this budget.',
+      downgradedKey: resolveKey({ stage: 'mvp', team, budget: 'micro', sector })
+    };
+  }
 
-    return "edtech_idea";
+  if (stage === 'growth' && budget === 'low') {
+    return {
+      type: 'caution',
+      headline: '⚠ Tight budget for growth stage',
+      body: '₹50K–2L/mo is tight for a growth-stage product. You can operate this stack, but you will face hard trade-offs between reliability (uptime SLAs) and features. Consider vertical scaling before horizontal. Showing the best stack for your constraints.',
+      downgradedKey: null // still show growth stack, just warn
+    };
+  }
+
+  return null; // no edge case
 }
 
-  if (budget === "low") {
-    if (sector === "healthtech") {
-      if (stage === "growth") return "healthtech_growth";
-      return "healthtech_mvp";
+function resolveKey({ sector, stage, budget }) {
+
+  if (budget === 'micro') {
+    const microMap = {
+      edtech:     'edtech_idea',
+      fintech:    'fintech_idea',
+      agritech:   'agritech_idea',
+      healthtech: 'healthtech_idea',
+      saas:       'saas_idea',
+      d2c:        'd2c_idea'
+    };
+    return microMap[sector] || 'saas_idea'; // fallback only if sector unknown
+  }
+
+  /* --- low budget: sector-specific, stage-aware --- */
+  if (budget === 'low') {
+    if (sector === 'healthtech') {
+      return stage === 'growth' ? 'healthtech_growth' : 'healthtech_mvp';
     }
-    if (sector === "fintech") return "fintech_mvp";
-    if (sector === "edtech") return stage === "idea" ? "edtech_idea" : "edtech_traction";
-    if (sector === "saas") return "saas_mvp";
-
-    return "saas_mvp";
+    if (sector === 'fintech')    return 'fintech_mvp';
+    if (sector === 'edtech')     return stage === 'idea' ? 'edtech_idea' : 'edtech_traction';
+    if (sector === 'saas')       return 'saas_mvp';
+    if (sector === 'd2c')        return 'd2c_mvp';
+    if (sector === 'agritech')   return 'agritech_mvp';
+    return 'saas_mvp'; // generic B2B fallback
   }
 
-  if (budget === "mid") {
-    if (sector === "healthtech") return "healthtech_growth";
-    if (sector === "d2c") return stage === "growth" ? "d2c_growth" : "d2c_mvp";
-    if (sector === "saas") return "saas_growth";
-
-    return "saas_growth";
+  /* --- mid budget: sector + stage aware --- */
+  if (budget === 'mid') {
+    if (sector === 'healthtech') return 'healthtech_growth';
+    if (sector === 'd2c')        return stage === 'growth' ? 'd2c_growth' : 'd2c_mvp';
+    if (sector === 'saas')       return stage === 'growth' ? 'saas_growth' : 'saas_traction';
+    if (sector === 'fintech')    return stage === 'growth' ? 'fintech_growth' : 'fintech_mvp';
+    if (sector === 'edtech')     return stage === 'growth' ? 'edtech_growth' : 'edtech_traction';
+    if (sector === 'agritech')   return stage === 'growth' ? 'agritech_growth' : 'agritech_mvp';
+    return 'saas_growth';
   }
 
-  if (budget === "high") {
-    if (sector === "d2c") return "d2c_growth";
-    if (sector === "saas") return "saas_growth";
-    if (sector === "healthtech") return "healthtech_growth";
-
-    return "d2c_growth";
+  /* --- high budget: push to growth stacks per sector --- */
+  if (budget === 'high') {
+    const highMap = {
+      d2c:        'd2c_growth',
+      saas:       'saas_growth',
+      healthtech: 'healthtech_growth',
+      fintech:    'fintech_growth',
+      edtech:     'edtech_growth',
+      agritech:   'agritech_growth'
+    };
+    return highMap[sector] || 'saas_growth';
   }
 
+  /* --- exact match fallback --- */
   const exact = `${sector}_${stage}`;
-  return STACKS[exact] ? exact : "fintech_mvp";
+  return STACKS[exact] ? exact : 'saas_mvp';
+
+  if (stage === "idea") {
+  // always downgrade complexity
+    return `${sector}_idea`;
+  }
 }
 
-
+/* ============================================================
+   PILL INTERACTIONS
+   ============================================================ */
 function initPills() {
-  const pills = document.querySelectorAll('.pill');
+  const pills = document.querySelectorAll('.pill[data-group]');
 
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
       const group = pill.dataset.group;
       const value = pill.dataset.value;
 
-      // Deactivate all pills in same group
       document.querySelectorAll(`.pill[data-group="${group}"]`).forEach(p => {
         p.classList.remove('active');
       });
 
-      // Activate clicked pill
       pill.classList.add('active');
       selected[group] = value;
-
-      // Update button and hint
       updateCTA();
     });
   });
@@ -346,7 +569,6 @@ function updateCTA() {
   }
 }
 
-
 function initGenerate() {
   document.getElementById('generateBtn').addEventListener('click', () => {
     if (!selected.stage || !selected.team || !selected.budget || !selected.sector) return;
@@ -355,36 +577,43 @@ function initGenerate() {
 }
 
 function renderResult() {
-  const key = getStackKey(selected);
-  const stack = STACKS[key];
+  const edgeCase  = detectEdgeCases(selected);
+  const resolvedKey = edgeCase && edgeCase.downgradedKey
+    ? edgeCase.downgradedKey
+    : resolveKey(selected);
+  const stack = STACKS[resolvedKey];
 
   if (!stack) {
-    console.error("No Stack found for:", selected);
+    console.error('No stack found for key:', resolvedKey, '| inputs:', selected);
     return;
   }
 
-
-  document.getElementById('emptyState').style.display    = 'none';
+  /* --- show result area --- */
+  document.getElementById('emptyState').style.display = 'none';
   const wrapper = document.getElementById('resultWrapper');
   wrapper.style.display = 'flex';
 
-
+  /* trigger re-animation */
   wrapper.style.animation = 'none';
   wrapper.offsetHeight;
   wrapper.style.animation = '';
 
-
+  /* --- header --- */
   document.getElementById('resultTitle').textContent = 'Recommended stack';
   document.getElementById('resultSubtitle').textContent =
-    `${stack.label} · ${selected.team === 'solo' ? 'Solo' : selected.team === 'small' ? '2–5 people' : selected.team === 'mid' ? '6–15 people' : '15+ people'} · ${getBudgetLabel(selected.budget)}`;
+    `${stack.label} · ${getTeamLabel(selected.team)} · ${getBudgetLabel(selected.budget)}`;
 
   const badgeContainer = document.getElementById('resultBadges');
-  badgeContainer.innerHTML = '';
-  badgeContainer.innerHTML += `<span class="badge badge-sector">${stack.sector}</span>`;
+  badgeContainer.innerHTML = `<span class="badge badge-sector">${stack.sector}</span>`;
   if (stack.contraCount > 0) {
     badgeContainer.innerHTML += `<span class="badge badge-contra">${stack.contraCount} contrarian pick${stack.contraCount > 1 ? 's' : ''}</span>`;
   }
+  if (edgeCase && edgeCase.downgradedKey) {
+    badgeContainer.innerHTML += `<span class="badge badge-contra">Adjusted for realism</span>`;
+  }
 
+  /* --- edge case warning banner --- */
+  renderEdgeCaseBanner(edgeCase);
 
   const grid = document.getElementById('stackGrid');
   grid.innerHTML = '';
@@ -415,9 +644,8 @@ function renderResult() {
     grid.appendChild(card);
   });
 
-
-  const indiaBox = document.getElementById('indiaBox');
-  indiaBox.innerHTML = `
+ 
+  document.getElementById('indiaBox').innerHTML = `
     <div class="india-icon">${stack.india.icon}</div>
     <div class="india-content">
       <div class="india-label">India-specific integration</div>
@@ -426,25 +654,54 @@ function renderResult() {
     </div>
   `;
 
-
-  const redflagBox = document.getElementById('redflagBox');
-  redflagBox.innerHTML = `
+  document.getElementById('redflagBox').innerHTML = `
     <div class="redflag-header">⚠ Red flag for this combination</div>
     <div class="redflag-text">${stack.redflag}</div>
   `;
 
- 
-  const sourceRow = document.getElementById('sourceRow');
-  sourceRow.innerHTML = `
+  
+  document.getElementById('sourceRow').innerHTML = `
     <div class="source-dot"></div>
     <span class="source-text">Sources:</span>
     <span class="source-text">${stack.source}</span>
   `;
 
-
   if (window.innerWidth <= 900) {
     document.getElementById('outputPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+
+function renderEdgeCaseBanner(edgeCase) {
+
+  const existing = document.getElementById('edgeCaseBanner');
+  if (existing) existing.remove();
+
+  if (!edgeCase) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'edgeCaseBanner';
+
+  const colorClass = edgeCase.type === 'caution' ? 'banner-caution' : 'banner-warn';
+  banner.className = `edge-case-banner ${colorClass}`;
+
+  banner.innerHTML = `
+    <div class="banner-headline">${edgeCase.headline}</div>
+    <div class="banner-body">${edgeCase.body}</div>
+  `;
+
+  const wrapper = document.getElementById('resultWrapper');
+  wrapper.insertBefore(banner, wrapper.firstChild);
+}
+
+function getTeamLabel(team) {
+  const map = {
+    solo:  'Solo founder',
+    small: '2–5 people',
+    mid:   '6–15 people',
+    large: '15+ people'
+  };
+  return map[team] || team;
 }
 
 function getBudgetLabel(budget) {
@@ -456,6 +713,40 @@ function getBudgetLabel(budget) {
   };
   return map[budget] || budget;
 }
+
+(function injectBannerStyles() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .edge-case-banner {
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      animation: fadeIn 0.35s ease both;
+    }
+    .banner-warn {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+    }
+    .banner-caution {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      opacity: 0.85;
+    }
+    .banner-headline {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--amber-text);
+      margin-bottom: 5px;
+    }
+    .banner-body {
+      font-size: 13px;
+      color: var(--amber-text);
+      line-height: 1.55;
+    }
+  `;
+  document.head.appendChild(style);
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
   initPills();
